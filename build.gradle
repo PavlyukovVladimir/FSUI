@@ -1,0 +1,119 @@
+plugins {
+    id 'java'
+    id "io.qameta.allure" version '2.10.0'
+}
+
+ext {
+    allureVersion = '2.19.0'
+    restAssuredVersion = '5.2.0'
+    junitVersion = '5.9.0'
+}
+
+tasks.allureReport {
+    doFirst {
+        delete("build/copy-categories/")
+        delete("build/reports/allure-report/")
+        copy {
+            from('src/test/resources/categories.json')
+            into('build/copy-categories/')
+            rename('categories.json', 'copyCategories')
+        }
+    }
+}
+
+tasks.clean {
+    doLast {
+        copy {
+            from('src/test/resources/categories.json')
+            into('build/copy-categories/')
+            rename('categories.json', 'copyCategories')
+        }
+        copy {
+            from('src/test/resources/')
+            into('build/allure-results/')
+            include('categories.json')
+        }
+    }
+}
+
+allure {
+    version = allureVersion
+    autoconfigure = true
+    aspectjweaver = true
+    useJUnit5 {
+        version = allureVersion
+    }
+}
+group 'io.thrive'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    google()
+}
+
+dependencies {
+
+    // https://mvnrepository.com/artifact/org.yaml/snakeyaml
+    testImplementation group: 'org.yaml', name: 'snakeyaml', version: '1.32'
+
+    // убирает варнинг spf4
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-nop
+    testImplementation group: 'org.slf4j', name: 'slf4j-nop', version: '2.0.0'
+
+    // подключает junit
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: "$junitVersion"
+
+    // подключает selenide - упрощает работу с selenium
+    // https://mvnrepository.com/artifact/com.codeborne/selenide
+    testImplementation group: 'com.codeborne', name: 'selenide', version: '6.3.5'
+
+    // подключает rest-assured для тестов api
+    // https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: "$restAssuredVersion"
+    // для валидации JSON
+    // https://mvnrepository.com/artifact/io.rest-assured/json-schema-validator
+    testImplementation group: 'io.rest-assured', name: 'json-schema-validator', version: "$restAssuredVersion"
+
+    // для генерации фейковых данных
+    // https://mvnrepository.com/artifact/com.github.javafaker/javafaker
+    testImplementation group: 'com.github.javafaker', name: 'javafaker', version: '1.0.2'
+
+    // работа с JSON
+    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+    testImplementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
+    // Наблюдатель
+    // https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
+    testImplementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.9.1'
+
+    // Для результирующих отчетов
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-junit5
+    testImplementation group: 'io.qameta.allure', name: 'allure-junit5', version: "$allureVersion"
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-java-commons
+    testImplementation group: 'io.qameta.allure', name: 'allure-java-commons', version: "$allureVersion"
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-commandline
+    testImplementation group: 'io.qameta.allure', name: 'allure-commandline', version: "$allureVersion"
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-assertj
+    testImplementation group: 'io.qameta.allure', name: 'allure-assertj', version: "$allureVersion"
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-rest-assured
+    testImplementation group: 'io.qameta.allure', name: 'allure-rest-assured', version: "$allureVersion"
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-java-commons
+    testImplementation group: 'io.qameta.allure', name: 'allure-java-commons', version: "$allureVersion"
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-selenide
+    testImplementation group: 'io.qameta.allure', name: 'allure-selenide', version: "$allureVersion"
+
+
+
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'allure.results.directory', 'build/allure-results'
+}

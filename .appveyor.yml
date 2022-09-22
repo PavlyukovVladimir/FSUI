@@ -1,0 +1,24 @@
+image: Ubuntu2004  # образ для сборки
+
+stack: jdk 11  # версия JDK
+
+branches:
+  only:
+    - master  # ветка git
+
+build: off  # будем использовать свой скрипт сборки
+
+#install:
+#  # запускаем SUT (& означает, что в фоновом режиме - не блокируем терминал для запуска тестов)
+#  - java -jar ./artifacts/app-mbank.jar &
+
+#build_script:
+#  - ./gradlew clean --info  # запускаем тест, флаг --info позволяет выводить больше информации
+
+test_script:
+  - ./gradlew clean test --tests io.thrive.fs.api.tests.TestTest --info  # запускаем тест, флаг --info позволяет выводить больше информации
+
+on_finish:
+  - ./gradlew allureReport  # запускает генерацию allure отчета
+  - 7z a build/reports.zip build/reports/
+  - appveyor PushArtifact build/reports.zip
