@@ -16,19 +16,22 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Epic("Регистрация пользователя")
+@Epic("New user registration")
 public class ApiRegistrationTest extends BaseAPITest{
+
+//<editor-fold desc="Fields">
     private final GlossaryMethods glossaryMethods = new GlossaryMethods(getBaseURL());
     private final AuthMethods authMethods = new AuthMethods(getBaseURL());
     private final UsersMethods usersMethods = new UsersMethods(getBaseURL());
     private final DataGenerator dataGenerator = new DataGenerator();
     private final PostgrestDataBase postgrestDataBase = new PostgrestDataBase();
-
+//</editor-fold>
+//<editor-fold desc="Tests">
     @Test
-    @Story("Регистрация с рефер кодом")
+    @Story("Registration new user with refer code")
     @DisplayName("\"Happy Flow\" Registration new user with refer code")
     @Description("Registration new user from API with refer code")
-    public void registrationScenarioWithReferCode(){
+    public void registrationWithReferCodeScenario(){
         // получить глоссарий страны(вернется всего 1 - Бразилия)
         List<JSONObject> lstCountry = getGlossary();
         // получить случайную страну
@@ -104,10 +107,10 @@ public class ApiRegistrationTest extends BaseAPITest{
     }
 
     @Test
-    @Story("Регистрация без рефер кода")
+    @Story("Registration new user without refer code")
     @DisplayName("\"Happy Flow\" Registration new user without refer code\"")
     @Description("Registration new user from API without refer code")
-    public void registrationScenarioWithoutReferCode(){
+    public void registrationWithoutReferCodeScenario(){
         // получить глоссарий страны(вернется всего 1 - Бразилия)
         List<JSONObject> lstCountry = getGlossary();
         // получить случайную страну
@@ -175,30 +178,30 @@ public class ApiRegistrationTest extends BaseAPITest{
         JSONObject creds = auserLogin(email, pass);
         Assertions.assertEquals(userId, (Integer) creds.get("userId"));
     }
-
-
-    @Step("Логинимся новым пользователем")
+//</editor-fold>
+//<editor-fold desc="Steps">
+    @Step("Log in as a new user")
     private JSONObject auserLogin(String email, String pass) {
         return authMethods.userLogin(email, pass);
     }
 
-    @Step("Установим пароль")
+    @Step("Setting a password")
     private void setPassword(String registrationToken, String pass) {
         usersMethods.usersSetPassword(registrationToken, pass);
     }
 
-    @Step("Получим из БД, регистрационный токен")
+    @Step("Getting a registration token from the database")
     private String getRegistrationToken(int userId, String type) {
         PostgrestDataBase postgrest = new PostgrestDataBase();
         return postgrest.getToken(userId, type);
     }
 
-    @Step("Подтверждаем регистрацию пользователя")
+    @Step("Confirming the user's registration")
     private void approveUserRegistration(String adminToken, int userId) {
         usersMethods.usersApprove(adminToken, userId);
     }
 
-    @Step("Проверка, что нужный пользователь присутствует в списке ожидающих подтверждения")
+    @Step("Checking that the desired user is present in the list of pending confirmation")
     void checkingUserInPendingList(List<JSONObject> users, int checkUserId, String checkUsrEmail){
         int userId = 0;
         for(var usr : users){
@@ -213,12 +216,12 @@ public class ApiRegistrationTest extends BaseAPITest{
         Assertions.assertEquals(checkUserId, userId, "No matched user id's");
     }
 
-    @Step("Получаем список пользователей ожидающих подтверждения")
+    @Step("Getting a list of users waiting for confirmation")
     private List<JSONObject> getPendingUsers(String adminToken) {
         return usersMethods.usersPending(adminToken);
     }
 
-    @Step("Регистрируем нового пользователя")
+    @Step("Registering a new user")
     private void registerNewUser(String referCode, String fullName, String email, String phone, int countryId, int stateId, String city) {
         usersMethods.usersRegister(referCode, fullName, email, phone, countryId, stateId, city);
     }
@@ -232,7 +235,7 @@ public class ApiRegistrationTest extends BaseAPITest{
         return  (int) postgrestDataBase.getUsersCount();
     }
 
-    @Step("Получаем id пользователя для рефер кода")
+    @Step("Getting the user ID for the referral code")
     private int getUserIdForReferCode(List<JSONObject> users) {
         Random random = new Random();
         int[] randomUsersIDArray = random.ints(users.size(),0,users.size()).toArray();
@@ -250,35 +253,35 @@ public class ApiRegistrationTest extends BaseAPITest{
         return referId;
     }
 
-    @Step("Получаем список пользователей до регистрации нового")
+    @Step("Getting a list of users before registering a new one")
     private List<JSONObject> getUserList(String adminToken, boolean b) {
         return usersMethods.usersAll(adminToken, b);
     }
 
-    @Step("Логинимся администратором")
+    @Step("Log in as an administrator\n")
     private String adminLogin(String adminname, String password) {
         return  (String) authMethods
                 .adminLogin(adminname,password)
                 .get("accessToken");
     }
 
-    @Step("Получаем id случайного штата из страны")
+    @Step("Getting the id of a random state from the country")
     private int getStateIdRandomly(JSONObject country) {
         List<LinkedHashMap> lstStates = (ArrayList<LinkedHashMap>) country.get("states");
         LinkedHashMap state = lstStates.get((int)Math.round(Math.random() * lstStates.size()));
         return  (Integer) state.get("id");
     }
 
-    @Step("Получаем случайную страну из глоссария")
+    @Step("Get a random country from the glossary")
     private JSONObject getCountryIdRandomly(List<JSONObject> lstCountry) {
         return lstCountry.get((int)(Math.random() * lstCountry.size()));
     }
 
-    @Step("Получаем список стран и штатов из глоссария")
+    @Step("Get a list of countries and states from the glossary")
     private List<JSONObject> getGlossary() {
         return glossaryMethods.getStripePaymentsHistory();
     }
-
+//</editor-fold>
 
     public void registers(){
         List<Integer> num = Arrays.asList(1,2,3,4,5);

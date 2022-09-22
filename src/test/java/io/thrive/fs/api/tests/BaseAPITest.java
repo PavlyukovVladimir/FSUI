@@ -10,8 +10,7 @@ import static io.restassured.RestAssured.filters;
 
 
 public class BaseAPITest {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private static final Logger log = LoggerFactory.getLogger(BaseAPITest.class);
     private String baseURL;
     public BaseAPITest() {
         this.baseURL = Constants.BASE_URL + "api/";
@@ -28,7 +27,6 @@ public class BaseAPITest {
 
     @BeforeAll
     public static void setUpScenario(){
-
-//        log.info("Scenario \"" + "" + "\"");
+        log.info("Scenario \"" + "" + "\"");
     }
 }
