@@ -109,6 +109,11 @@ dependencies {
     // https://mvnrepository.com/artifact/io.qameta.allure/allure-selenide
     testImplementation group: 'io.qameta.allure', name: 'allure-selenide', version: "$allureVersion"
 
+    // https://mvnrepository.com/artifact/jakarta.mail/jakarta.mail-api
+    // testImplementation group: 'jakarta.mail', name: 'jakarta.mail-api', version: '2.1.0'
+
+    // https://mvnrepository.com/artifact/com.sun.mail/javax.mail
+    testImplementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 
 
 }
