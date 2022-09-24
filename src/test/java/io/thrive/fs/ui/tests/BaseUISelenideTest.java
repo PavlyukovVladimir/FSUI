@@ -16,7 +16,7 @@ public class BaseUISelenideTest {
 
         Configuration.driverManagerEnabled = true;
         Configuration.browser = "chrome";
-        Configuration.browserVersion = "104";
+        Configuration.browserVersion = "105";
         Configuration.baseUrl = Constants.BASE_URL;
         Configuration.holdBrowserOpen = true;
         SelenideLogger.addListener(
