@@ -121,6 +121,6 @@ dependencies {
 test {
     useJUnitPlatform()
     systemProperties['allure.results.directory'] = 'build/allure-results'
-    systemProperties['browser'] = 'chrome'
-    systemProperties['webdriver.chrome.driver'] = 'drivers/chromedriver'
+//    systemProperties['browser'] = 'chrome'
+//    systemProperties['webdriver.chrome.driver'] = 'drivers/chromedriver'
 }
