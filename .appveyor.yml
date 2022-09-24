@@ -12,8 +12,9 @@ build: off  # будем использовать свой скрипт сбор
 #  # запускаем SUT (& означает, что в фоновом режиме - не блокируем терминал для запуска тестов)
 #  - java -jar ./artifacts/app-mbank.jar &
 
-#build_script:
-#  appveyor DownloadFile https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb build/resources/google-chrome.deb
+build_script:
+  appveyor DownloadFile https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb build/resources/google-chrome.deb
+  sudo apt install ./google-chrome.deb
 
 test_script:
 # запускаем тест, флаг --info позволяет выводить больше информации:
