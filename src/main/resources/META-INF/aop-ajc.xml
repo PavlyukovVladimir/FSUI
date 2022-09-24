@@ -1,6 +1,0 @@
-<aspectj>
-<aspects>
-    <aspect name="io.thrive.fs.help.WebDriverLogger.java"/>
-    <aspect name="io.thrive.fs.help.APITestsLogger.java"/>
-</aspects>
-</aspectj>

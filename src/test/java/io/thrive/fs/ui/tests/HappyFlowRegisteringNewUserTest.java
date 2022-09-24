@@ -7,24 +7,20 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.*;
 import io.thrive.fs.api.common.AuthMethods;
 import io.thrive.fs.api.common.UsersMethods;
-import io.thrive.fs.help.PostgrestDataBase;
+import io.thrive.fs.help.MailAPI;
 import io.thrive.fs.help.DataGenerator;
 import io.thrive.fs.ui.pages.fs.ui.*;
-import io.thrive.fs.ui.pages.stripe.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.*;
-import org.junit.platform.commons.util.ClassUtils;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.lang.reflect.Method;
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.codeborne.selenide.Selenide.switchTo;
@@ -39,15 +35,17 @@ public class HappyFlowRegisteringNewUserTest extends BaseUISelenideTest{
     @DisplayName("Регистрируем нового пользователя вместе со Stripe аккаунтом")
     @Story("Happy flow registration new user with Stripe")
     @Description("From UI it registers new user and registers Stripe account hor him")
-    public void registrationNewUserHappyTest(){
+    public void registrationNewUserHappyTest() throws MessagingException, IOException, InterruptedException {
 
         DataGenerator dataGenerator = new DataGenerator();
         // открываем страницу регистрации нового пользователя
-        String referSuffix = "?referCode=eyJ1c2VySWQiOjM5Nn0=";
+//        String referSuffix = "?referCode=eyJ1c2VySWQiOjM5Nn0=";
+        String referSuffix = "";
+
         Selenide.open(RegistrationPage.endpoint + referSuffix);
         WebDriverRunner.getWebDriver().manage().window().maximize();
         // создаем "ждалку"
-        WebDriverWait wait = new WebDriverWait(WebDriverRunner.getWebDriver(), Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(WebDriverRunner.getWebDriver(), Duration.ofSeconds(100));
         // объект с методами страницы регистрации
         RegistrationPage registrationPage = new RegistrationPage();
         // Ждем когда текущий url сменится на нужный
@@ -95,14 +93,23 @@ public class HappyFlowRegisteringNewUserTest extends BaseUISelenideTest{
             }
         }
         Assertions.assertNotEquals(0L, userId, "No registration requests found from email:" + email);
+
+        MailAPI mailAPI = new MailAPI();
+
         // подтвердим регистрацию пользователя
         usersMethods.usersApprove(adminToken, userId);
 
         // Далее из базы получаем токен подтверждения регистрации(чтобы не лезть в мыло)
-        // TODO надо бы получение токена из мыла тоже автоматизировать
-        PostgrestDataBase postgrest = new PostgrestDataBase();
+        // надо бы получение токена из мыла тоже автоматизировать
+//        PostgrestDataBase postgrest = new PostgrestDataBase();
 
-        String registrationToken = postgrest.getToken(userId, "registration");
+//        String registrationToken = postgrest.getToken(userId, "registration");
+
+        String registrationLink = mailAPI.getFluencyStrikersRegistrationLinkFromMail(email , 200);
+
+        System.out.println(registrationLink);
+
+        String registrationToken = registrationLink.substring(registrationLink.indexOf("token=") + 6);
         // получаем пароль
         String pass = dataGenerator.getPassword();
         // установим пароль

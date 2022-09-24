@@ -1,34 +1,26 @@
 package io.thrive.fs.help;
 
 import javax.mail.*;
-import javax.mail.search.AddressTerm;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Properties;
+import java.io.InputStream;
+import java.util.*;
 
 public class MailAPI {
-//    mail.transport.protocol = smtps
-//    mail.smtp.host = smtp.yandex.ru
-//    mail.smtp.port = 465
-//    mail.smtp.user = artem.boiar
-//    mail.smtp.ssl.enable = true
-//    mail.smtp.auth = true
-//    mail.debug = true
     private Properties mailProperties;
     private String user;
     private String password;
     private String host;
 
     private Store store;
+    private int oldMessageCount;
 
-    public MailAPI() throws MessagingException, IOException {
+    public MailAPI() throws MessagingException {
         this.user = "vladimir.pavlyukov@thrive.io";
         this.password = "dcmylouazhaxkmut";
         this.host = "imap.yandex.ru";
 
         // Свойства установки
-        this.mailProperties  = new Properties();
+        this.mailProperties = new Properties();
         this.mailProperties.put("mail.store.protocol", "imaps");  //SSL
 
         this.store = Session.getInstance(this.mailProperties).getStore();
@@ -36,34 +28,129 @@ public class MailAPI {
 
         Folder inbox = getOpenedFolder("INBOX", Folder.READ_ONLY);
 
-        System.out.println("message " + inbox.getMessageCount());
-
-        Message message = inbox.getMessage(inbox.getMessageCount());
-        System.out.println(message.getContent());
-        Address[] addresses = message.getFrom();
-        Address address = addresses[0];
-
-        String[] array = Arrays.stream(message.getFrom()).map(Address::toString).toArray(String[]::new);
-        System.out.println(Arrays.toString(array));
-        System.out.println(message.getContentType());
-        array = Arrays.stream(message.getAllRecipients()).map(Address::toString).toArray(String[]::new);
-        System.out.println(Arrays.toString(array));
-        System.out.println(message.getReceivedDate());
-        System.out.println(message.getSubject());
-        System.out.println(message.getDescription());
-        System.out.println(message.getDisposition());
-
+        this.oldMessageCount = inbox.getMessageCount();
     }
 
-    public Folder getOpenedFolder(String folderName, int mode) throws MessagingException {
-        if(folderName == null || folderName.equals("")){
+    public void printParts(Object o) throws MessagingException, IOException {
+        if (o instanceof String) {
+            System.out.println("This is a String");
+            System.out.println((String) o);
+        } else if (o instanceof Multipart) {
+            System.out.println("This is a Multipart");
+            Multipart mp = (Multipart) o;
+            int count = mp.getCount();
+            for (int i = 0; i < count; i++) {
+                BodyPart bp = mp.getBodyPart(i);
+                System.out.println(bp.getContentType());
+                System.out.println(bp.getContent());
+                printParts(bp);
+            }
+        } else if (o instanceof InputStream) {
+            System.out.println("This is just an input stream");
+            InputStream is = (InputStream) o;
+            int c;
+            while ((c = is.read()) != -1)
+                System.out.write(c);
+        }
+    }
+
+    private Folder getOpenedFolder(String folderName, int mode) throws MessagingException {
+        if (folderName == null || folderName.equals("")) {
             folderName = "INBOX";
         }
-        if(mode != Folder.READ_ONLY && mode != Folder.READ_WRITE){
+        if (mode != Folder.READ_ONLY && mode != Folder.READ_WRITE) {
             mode = Folder.READ_ONLY;
         }
         Folder folder = this.store.getFolder(folderName);
         folder.open(mode);
         return folder;
+    }
+
+    public int getMessageCount() {
+        return this.oldMessageCount;
+    }
+
+    public int messageCountRefresh() throws MessagingException {
+        Folder folder = getOpenedFolder("INBOX", Folder.READ_ONLY);
+        this.oldMessageCount = folder.getMessageCount();
+        return this.oldMessageCount;
+    }
+
+    public List<Message> getNewMessagesList(boolean refreshingMessageCount) throws MessagingException {
+        int oldMessageCount = this.oldMessageCount;
+        Folder fld = getOpenedFolder("INBOX", Folder.READ_ONLY);
+        int newMessageCount = fld.getMessageCount();
+        List<Message> lst = new ArrayList<>();
+        if (oldMessageCount == newMessageCount) {
+            return lst;
+        }
+        if (refreshingMessageCount) {
+            this.oldMessageCount = newMessageCount;
+        }
+        for (int i = oldMessageCount; i <= newMessageCount; i++) {
+            lst.add(fld.getMessage(i));
+        }
+        return lst;
+    }
+
+    public boolean isNewMessagesPresent() throws MessagingException {
+        int oldMessageCount = this.oldMessageCount;
+        Folder fld = getOpenedFolder("INBOX", Folder.READ_ONLY);
+        int newMessageCount = fld.getMessageCount();
+        return oldMessageCount == newMessageCount;
+    }
+
+    public static String[] getAddressFrom(Message message) throws MessagingException {
+        return Arrays.stream(message.getFrom()).map(Address::toString).toArray(String[]::new);
+    }
+
+    public static String[] getAddressTo(Message message) throws MessagingException {
+        return Arrays.stream(message.getAllRecipients()).map(Address::toString).toArray(String[]::new);
+    }
+
+    public static String getFirstPart(Message message) throws MessagingException, IOException {
+        Object o = message.getContent();
+        Multipart mp = (Multipart) o;
+        BodyPart bp = mp.getBodyPart(0);
+        return bp.getContent().toString();
+    }
+
+    public String getFluencyStrikersRegistrationLinkFromMail(String mail, int timeoutSec)
+            throws InterruptedException, IOException {
+        long start = System.currentTimeMillis() / 1000;
+        System.out.println("старт: " + start);
+        String link = null;
+        while ((System.currentTimeMillis() / 1000 - start) < timeoutSec) {
+            try {
+                if (isNewMessagesPresent()) {
+                    List<Message> newMessages = getNewMessagesList(false);
+                    System.out.println("получено " + newMessages.size() + " сообщения/е/ий");
+                    for (Message message : newMessages) {
+                        if ("Registration mail".equals(message.getSubject())) {
+                            String[] mails = getAddressTo(message);
+                            for (String address : mails) {
+                                if (mail.equals(address)) {
+                                    String text = getFirstPart(message);
+                                    int index = text.indexOf("https://fluency-strikers");
+                                    link = text.substring(index);
+                                    return link;
+                                }
+                                ;
+                            }
+                        }
+                    }
+                    this.oldMessageCount += newMessages.size();
+                }
+            } catch (MessagingException e) {
+                System.out.println("была ошибка сообщений");
+                System.out.println(Arrays.toString(e.getStackTrace()));
+            } finally {
+                if (link == null) {
+                    System.out.println("подождем 3 сек");
+                    Thread.sleep(3000);
+                }
+            }
+        }
+        return null;
     }
 }
