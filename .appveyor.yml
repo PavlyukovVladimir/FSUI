@@ -17,7 +17,7 @@ build: off  # будем использовать свой скрипт сбор
 
 test_script:
 # запускаем тест, флаг --info позволяет выводить больше информации:
-  - ./gradlew clean test --tests io/thrive/fs/ui/tests/HappyFlowRegisteringNewUserTest --info
+  - ./gradlew clean test --tests io.thrive.fs.ui.tests.HappyFlowRegisteringNewUserTest --info
 on_finish:
   - ./gradlew allureReport  # запускает генерацию allure отчета
   - 7z a build/reports.zip build/reports/
