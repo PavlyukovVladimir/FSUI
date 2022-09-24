@@ -37,11 +37,10 @@ public class HappyFlowRegisteringNewUserTest extends BaseUISelenideTest{
     @Description("From UI it registers new user and registers Stripe account hor him")
     public void registrationNewUserHappyTest() throws MessagingException, IOException, InterruptedException {
 
-        DataGenerator dataGenerator = new DataGenerator();
-        // открываем страницу регистрации нового пользователя
 //        String referSuffix = "?referCode=eyJ1c2VySWQiOjM5Nn0=";
         String referSuffix = "";
 
+        // открываем страницу регистрации нового пользователя
         Selenide.open(RegistrationPage.endpoint + referSuffix);
         WebDriverRunner.getWebDriver().manage().window().maximize();
         // создаем "ждалку"
@@ -51,6 +50,7 @@ public class HappyFlowRegisteringNewUserTest extends BaseUISelenideTest{
         // Ждем когда текущий url сменится на нужный
         wait.until(ExpectedConditions.urlToBe(Configuration.baseUrl + RegistrationPage.endpoint + referSuffix));
         // Запишем случайное Бразильское имя
+        DataGenerator dataGenerator = new DataGenerator();
         String fullName = dataGenerator.generateFullName("pt-BR");
         registrationPage.setFullName(fullName);
         // Создаем имейл
@@ -147,42 +147,6 @@ public class HappyFlowRegisteringNewUserTest extends BaseUISelenideTest{
         Assertions.assertEquals(userId, ((Long) lsObj.get("userId")).longValue());
         // Объект с методами главной страницы
         HomePage homePage = new HomePage();
-//        // переходим на страницу комиссий
-//        homePage.hrfCommissionsClick();
-//        // Объект с методами страницы комиссий
-//        CommissionsPage commissionsPage = new CommissionsPage();
-//        wait.until(ExpectedConditions.urlToBe(Configuration.baseUrl + CommissionsPage.endpoint));
-//        // переключаемся на вкладку снятий заработанного
-//        commissionsPage.btnCreateClick();
-//        wait.withTimeout(Duration.ofSeconds(10))
-//                .until(ExpectedConditions.elementToBeClickable(
-//                        By.cssSelector("button[data-test=phone-help-text-test-mode]")));
-//        // проходим проверку телефона
-//        StripeStartPhoneConfirmPage stripeStartPhoneConfirmPage =
-//                new StripeStartPhoneConfirmPage(WebDriverRunner.getWebDriver().getCurrentUrl());
-//        stripeStartPhoneConfirmPage.setTestZeroPhone();
-//        stripeStartPhoneConfirmPage.clickContinue();
-//        // вводим тестовый проверочный код
-//        StripeSetVerificationCodePage stripeSetVerificationCodePage = new StripeSetVerificationCodePage(
-//                stripeStartPhoneConfirmPage.getBaseUrl());
-//        stripeSetVerificationCodePage.tapUseTestModeButton();
-//        // заполняем регистрационные данные
-//        StripeVerifyPersonalDetailsPage stripeVerifyPersonalDetailsPage = new StripeVerifyPersonalDetailsPage(
-//                stripeSetVerificationCodePage.getBaseUrl());
-//        stripeVerifyPersonalDetailsPage.fillVerijyPersonalDetails(email,phone);
-//        // указываем профессию
-//        StripeProfessionalDetailsPage stripeProfessionalDetailsPage = new StripeProfessionalDetailsPage(
-//                stripeVerifyPersonalDetailsPage.getBaseUrl());
-//        stripeProfessionalDetailsPage.checkProfession();
-//        // выбираем страйп своим банком для вывода денег
-//        StripeSelectPayoutsAccountPage stripeSelectPayoutsAccountPage = new StripeSelectPayoutsAccountPage(
-//                stripeProfessionalDetailsPage.getBaseUrl());
-//        stripeSelectPayoutsAccountPage.clickUseTestAccount();
-//        // итоговые подтверждения введенных данных
-//        StripeReviewDetailsPage stripeReviewDetailsPage = new StripeReviewDetailsPage(
-//                stripeSelectPayoutsAccountPage.getBaseUrl());
-//        stripeReviewDetailsPage.clickUseTestAccount();
-//        // проверка что вернулись обратно на сайт https://fluency-strikers.dev.thrive.io
         wait.until(ExpectedConditions.urlToBe(Configuration.baseUrl));
     }
 }
