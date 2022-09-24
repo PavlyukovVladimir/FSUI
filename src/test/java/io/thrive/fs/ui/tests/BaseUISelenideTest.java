@@ -14,10 +14,10 @@ public class BaseUISelenideTest {
     @BeforeEach
     void setAll(){
 
-        Configuration.driverManagerEnabled = true;
-        Configuration.webdriverLogsEnabled = true;
+//        Configuration.driverManagerEnabled = true;
+//        Configuration.webdriverLogsEnabled = true;
         Configuration.browser = "chrome";
-        Configuration.browserVersion = "104.0.5112.101-1";
+//        Configuration.browserVersion = "104.0.5112.101-1";
         Configuration.baseUrl = Constants.BASE_URL;
         Configuration.holdBrowserOpen = true;
         SelenideLogger.addListener(
