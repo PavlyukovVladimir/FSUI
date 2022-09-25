@@ -13,8 +13,8 @@ build: off  # будем использовать свой скрипт сбор
 #  - java -jar ./artifacts/app-mbank.jar &
 
 build_script:
-  - appveyor DownloadFile https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb build/resources/google-chrome.deb
-  - ps: sudo apt install build/resources/google-chrome.deb
+  - appveyor DownloadFile https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  - ps: sudo apt install google-chrome-stable_current_amd64.deb
 
 test_script:
 # запускаем тест, флаг --info позволяет выводить больше информации:
