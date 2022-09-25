@@ -19,7 +19,7 @@ public class BaseUISelenideTest {
         Configuration.browser = "chrome";
 //        Configuration.browserVersion = "104.0.5112.101-1";
         Configuration.baseUrl = Constants.BASE_URL;
-        Configuration.holdBrowserOpen = true;
+        Configuration.holdBrowserOpen = false;
         SelenideLogger.addListener(
                 "AllureSelenide", new AllureSelenide()
                         .screenshots(true)  // делать скриншоты
