@@ -14,15 +14,19 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import javax.mail.MessagingException;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
+import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.switchTo;
 
 
@@ -35,14 +39,13 @@ public class HappyFlowRegisteringNewUserTest extends BaseUISelenideTest{
     @DisplayName("Регистрируем нового пользователя вместе со Stripe аккаунтом")
     @Story("Happy flow registration new user with Stripe")
     @Description("From UI it registers new user and registers Stripe account hor him")
-    public void registrationNewUserHappyTest() throws MessagingException, IOException, InterruptedException {
+    public void registrationNewUserHappyTest() throws MessagingException, IOException, InterruptedException, AWTException {
 
 //        String referSuffix = "?referCode=eyJ1c2VySWQiOjM5Nn0=";
         String referSuffix = "";
 
         // открываем страницу регистрации нового пользователя
-        Selenide.open(RegistrationPage.endpoint + referSuffix);
-        WebDriverRunner.getWebDriver().manage().window().maximize();
+        openBrowser(RegistrationPage.endpoint + referSuffix);
         // создаем "ждалку"
         WebDriverWait wait = new WebDriverWait(WebDriverRunner.getWebDriver(), Duration.ofSeconds(100));
         // объект с методами страницы регистрации
@@ -67,10 +70,9 @@ public class HappyFlowRegisteringNewUserTest extends BaseUISelenideTest{
         // Создаем Название города
         String city = dataGenerator.generateCity("pt-BR");
         registrationPage.setCity(city);
-        // включим панель разработчика
-        String buttonName = "F12";
-        Keys key = Keys.valueOf(buttonName.toUpperCase());
-        switchTo().activeElement().sendKeys(key);
+
+        String selectAll = Keys.chord(Keys.CONTROL, Keys.SHIFT,"i");
+        WebDriverRunner.getWebDriver().findElement(By.tagName("html")).sendKeys(selectAll);
         // Отправим форму на регистрацию(клик по кнопке)
         registrationPage.registrationClick();
         // Ждем когда текущий url поменяется
@@ -148,5 +150,19 @@ public class HappyFlowRegisteringNewUserTest extends BaseUISelenideTest{
         // Объект с методами главной страницы
         HomePage homePage = new HomePage();
         wait.until(ExpectedConditions.urlToBe(Configuration.baseUrl));
+//        selectAll = Keys.chord(Keys.CONTROL, Keys.SHIFT,"i");
+//        WebDriverRunner.getWebDriver().findElement(By.tagName("html")).sendKeys(selectAll);
+//        switchTo().activeElement().sendKeys(Keys.F12);
+//        $("body").sendKeys(Keys.F12);
+        Robot robot = new Robot();
+        Thread.sleep(1000);
+        robot.delay(3000);
+
+
+        robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_SHIFT);
+        robot.keyRelease(KeyEvent.VK_I);
+
+
     }
 }

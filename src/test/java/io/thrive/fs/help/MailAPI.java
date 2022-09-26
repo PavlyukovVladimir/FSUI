@@ -61,6 +61,9 @@ public class MailAPI {
         if (mode != Folder.READ_ONLY && mode != Folder.READ_WRITE) {
             mode = Folder.READ_ONLY;
         }
+        if(!this.store.isConnected()){
+            this.store.connect(this.host, this.user, this.password);
+        };
         Folder folder = this.store.getFolder(folderName);
         folder.open(mode);
         return folder;
@@ -87,7 +90,7 @@ public class MailAPI {
         if (refreshingMessageCount) {
             this.oldMessageCount = newMessageCount;
         }
-        for (int i = oldMessageCount; i <= newMessageCount; i++) {
+        for (int i = oldMessageCount + 1; i <= newMessageCount; i++) {
             lst.add(fld.getMessage(i));
         }
         return lst;
@@ -97,7 +100,7 @@ public class MailAPI {
         int oldMessageCount = this.oldMessageCount;
         Folder fld = getOpenedFolder("INBOX", Folder.READ_ONLY);
         int newMessageCount = fld.getMessageCount();
-        return oldMessageCount == newMessageCount;
+        return oldMessageCount != newMessageCount;
     }
 
     public static String[] getAddressFrom(Message message) throws MessagingException {
@@ -143,7 +146,7 @@ public class MailAPI {
                 }
             } catch (MessagingException e) {
                 System.out.println("была ошибка сообщений");
-                System.out.println(Arrays.toString(e.getStackTrace()));
+                System.out.println(e.getStackTrace());
             } finally {
                 if (link == null) {
                     System.out.println("подождем 3 сек");

@@ -13,7 +13,7 @@
     * [Positive registration scenario with a referral code](io.thrive.fs.api.tests.ApiRegistrationTest.registrationScenarioWithReferCode) `./gradlew test --tests io.thrive.fs.api.tests.ApiRegistrationTest.registrationScenarioWithReferCode`
     * [Positive registration scenario without a referral code](io.thrive.fs.api.tests.ApiRegistrationTest.registrationScenarioWithoutReferCode) `./gradlew test --tests io.thrive.fs.api.tests.ApiRegistrationTest.registrationScenarioWithoutReferCode`
   * **UI**:
-    * Runs all UI tests: `./gradlew test --tests io.thrive.fs.ui.tests.*`
+    * Runs all UI tests: `./gradlew test --tests io.thrive.fs.ui.tests.HappyFlowRegisteringNewUserTest`
 * Generate allure project:
     * `./gradlew allureReport` - generate Allure report
     * [view the report](build/reports/allure-report/allureReport/index.html)

@@ -30,14 +30,17 @@ public class RegistrationPage {
 
     private SelenideElement btnRegistration = $("button");
 
+    @Step("Ввод ФИО: {fullName}")
     public void setFullName(String fullName){
         fldFullName.setValue(fullName);
     }
 
+    @Step("Ввод email: {email}")
     public void setEmail(String email){
         fldEmail.setValue(email);
     }
 
+    @Step("Ввод телефона: {phone}")
     public void setPhone(String phone){
         fldPhone.setValue(phone);
     }
