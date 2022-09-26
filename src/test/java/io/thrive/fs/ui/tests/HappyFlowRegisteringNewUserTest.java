@@ -16,18 +16,13 @@ import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import javax.mail.MessagingException;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
-
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.switchTo;
 
 
 @Epic("Full registering new user")
@@ -150,19 +145,5 @@ public class HappyFlowRegisteringNewUserTest extends BaseUISelenideTest{
         // Объект с методами главной страницы
         HomePage homePage = new HomePage();
         wait.until(ExpectedConditions.urlToBe(Configuration.baseUrl));
-//        selectAll = Keys.chord(Keys.CONTROL, Keys.SHIFT,"i");
-//        WebDriverRunner.getWebDriver().findElement(By.tagName("html")).sendKeys(selectAll);
-//        switchTo().activeElement().sendKeys(Keys.F12);
-//        $("body").sendKeys(Keys.F12);
-        Robot robot = new Robot();
-        Thread.sleep(1000);
-        robot.delay(3000);
-
-
-        robot.keyPress(KeyEvent.VK_CONTROL);
-        robot.keyPress(KeyEvent.VK_SHIFT);
-        robot.keyRelease(KeyEvent.VK_I);
-
-
     }
 }
