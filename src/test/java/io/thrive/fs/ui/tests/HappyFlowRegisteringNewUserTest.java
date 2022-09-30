@@ -19,7 +19,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import javax.mail.MessagingException;
-import java.awt.*;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
@@ -34,7 +33,7 @@ public class HappyFlowRegisteringNewUserTest extends BaseUISelenideTest{
     @DisplayName("Регистрируем нового пользователя вместе со Stripe аккаунтом")
     @Story("Happy flow registration new user with Stripe")
     @Description("From UI it registers new user and registers Stripe account hor him")
-    public void registrationNewUserHappyTest() throws MessagingException, IOException, InterruptedException, AWTException {
+    public void registrationNewUserHappyTest() throws MessagingException, IOException, InterruptedException {
 
 //        String referSuffix = "?referCode=eyJ1c2VySWQiOjM5Nn0=";
         String referSuffix = "";
