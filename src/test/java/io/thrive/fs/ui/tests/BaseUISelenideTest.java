@@ -7,7 +7,6 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
 import io.thrive.fs.help.Constants;
-import io.thrive.fs.ui.pages.fs.ui.RegistrationPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +21,9 @@ public class BaseUISelenideTest {
 //        Configuration.webdriverLogsEnabled = true;
         Configuration.browser = "chrome";
 //        Configuration.browserVersion = "104.0.5112.101-1";
-        Configuration.headless = true;
+        Configuration.headless = true;  // true запускает браузер в невидимом режиме
         Configuration.baseUrl = Constants.BASE_URL;
-        Configuration.holdBrowserOpen = false;
+        Configuration.holdBrowserOpen = false;  // true оставляет браузер открытым по завершению теста
         SelenideLogger.addListener(
                 "AllureSelenide", new AllureSelenide()
                         .screenshots(true)  // делать скриншоты
