@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/nr42s84gnwya1so4/branch/master?svg=true)](https://ci.appveyor.com/project/PavlyukovVladimir/fsui/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/e6k9r67tb0svvy85/branch/master?svg=true)](https://ci.appveyor.com/project/PavlyukovVladimir/fsui/branch/master)
 
 # How to use:
 
